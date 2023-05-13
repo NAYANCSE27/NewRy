@@ -1,14 +1,21 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { EditorState, convertToRaw } from "draft-js";
 import { Editor } from "react-draft-wysiwyg";
+import axios from "axios";
+import { toast } from "react-toastify";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import Layout from "../components/Layout";
 
-const AddNews = () => {
-  const [editorState, setEditorState] = React.useState(() =>
+const AddNews () {
+  const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [loading, setLoading] = useState(false);
+
   useEffect(() => {
     console.log(convertToRaw(editorState.getCurrentContent()));
   }, [editorState]);
@@ -31,16 +38,21 @@ const AddNews = () => {
       setLoading(false);
     }
   };
+
   return (
     <Layout>
       <h1 className="text-2xl font-semibold mt-5 ml-5">Add News</h1>
       <div className="px-5 py-5">
         <input
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
           type="text"
           className="border-2 h-10 w-full border-gray-300 px-5"
           placeholder="Title"
         />
         <textarea
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
           className="border-2 w-full border-gray-300 my-2 px-5"
           rows="4"
           placeholder="Description"
