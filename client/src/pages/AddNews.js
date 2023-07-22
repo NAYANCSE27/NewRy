@@ -7,7 +7,7 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 
 import Layout from "../components/Layout";
 
-const AddNews () {
+const AddNews = () => {
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
