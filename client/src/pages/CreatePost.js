@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
-import { json } from "react-router-dom";
 
 const modules = {
   toolbar: [
@@ -40,34 +39,43 @@ function CreatePost() {
 
   async function createNewPost(ev) {
     ev.preventDefault();
-    // const data = new FormData();
-    // data.set("title", title);
-    // data.set("summary", summary);
-    // data.set("content", content);
-    // data.set("file", files);
-    // // console.log('Files : ', files);
+
+    const data = new FormData();
+    data.append("title", title);
+    data.append("summary", summary);
+    data.append("content", content);
+    data.append("file", files);
+
+    // console.log('Files : ', files);
     // console.log('Data : ', data);
-    const data = {
-      title: title,
-      summary: summary,
-      content: content,
-      file: files,
-    };
 
-    console.log("Data : ", data);
+    // const data = {
+    //   title: title,
+    //   summary: summary,
+    //   content: content,
+    //   file: files,
+    // };
 
-    const response = await fetch("http://localhost:4000/post", {
-      method: "POST",
-      body: json.stringify({ title, summary, content, files }),
-      headers: {
-        "Content-Type": "application/json",
-      },
-    });
-    // console.log("response : ", response);
+    // console.log(data);
+
+    try {
+      const response = await fetch("http://localhost:4000/post", {
+        method: "POST",
+        body: data,
+      });
+      console.log(await response.json());
+    } catch (error) {
+      console.error("Error : ", error);
+    }
   }
 
   return (
-    <form onSubmit={createNewPost}>
+    <form
+      onSubmit={createNewPost}
+      method="post"
+      enctype="multipart/form-data"
+      // action="/profile"
+    >
       <input
         type="text"
         placeholder="Title"
@@ -82,6 +90,7 @@ function CreatePost() {
       />
       <input
         type="file"
+        accept="image/*"
         // value={files}
         onChange={(ev) => setFiles(ev.target.value)}
       />
