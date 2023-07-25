@@ -7,7 +7,8 @@ const Post = require("./models/Post");
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const multer = require("multer");
-const uploadMiddleware = multer({ dest: "uploads/" });
+const upload = multer({ dest: "uploads/" });
+// const uploadMiddleware = multer({ dest: "uploads/" });
 const fs = require("fs");
 
 const app = express();
@@ -17,6 +18,7 @@ const secret = "mysecretdfghjk";
 app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 app.use(express.json());
 app.use(cookieParser());
+app.use("/uploads", express.static(__dirname + "/uploads"));
 
 mongoose.connect(
   "mongodb+srv://node101:node101@node101.6h8jzwm.mongodb.net/blog?retryWrites=true&w=majority"
@@ -68,15 +70,16 @@ app.post("/logout", (req, res) => {
   res.cookie("token", "").json("ok");
 });
 
-//uploadMiddleware.single("file"),
-app.post("/post", (req, res) => {
-  // const { originalname, path } = req.file;
-  // const parts = originalname.split(".");
+app.post("/post", upload.single("file"), async (req, res) => {
+  // const { file } = req.file;
+  console.log("Request : ", req.file);
+
+  // const parts = file.split("\\");
   // const ext = parts[parts.length - 1];
-  // const newPath = path + "." + ext;
+  // const newPath = parts[parts.length - 1];
   // fs.renameSync(path, newPath);
 
-  // const { title, summary, content } = req.body;
+  const { title, summary, content } = req.body;
   // const postDoc = await Post.create({
   //   title,
   //   summary,
@@ -86,7 +89,7 @@ app.post("/post", (req, res) => {
 
   // res.json(postDoc);
 
-  console.log("Response : ", req.body);
+  // console.log("Response : ", req.body);
 
   res.json({ files: req.body });
 });
